@@ -26,4 +26,4 @@ jobs:
         CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         helm registry login ghcr.io -u ${{ github.actor }} --password $CR_TOKEN
-        helm push common-0.1.0.tgz oci://ghcr.io/${{ github.repository_owner }}/helm-charts
+        helm push common-0.1.0.tgz https://ghcr.io/${{ github.repository_owner }}/helm-charts
