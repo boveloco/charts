@@ -1,36 +1,48 @@
-name: Deploy Helm Chart
+name: Deploy Helm Chart to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # Change if your default branch is different
+    paths:
+      - 'charts/**'  # Trigger only when chart files change
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Helm
-      uses: azure/setup-helm@v1
-      with:
-        version: 'v3.11.0'
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.17.0  # Adjust to the latest Helm version
 
-    - name: Install Helm Push Plugin
-      run: |
-        helm plugin install https://github.com/chartmuseum/helm-push.git
+      - name: Package Helm Chart
+        run: |
+          mkdir -p .deploy
+          helm package charts/ --destination .deploy
 
-    - name: Package Helm Chart
-      run: |
-        helm package chart
+      - name: Checkout gh-pages Branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
 
-    - name: Push Helm Chart to HTTP Repository
-      env:
-        HELM_REPO_URL: "https://charts.example.com"  # Replace with your actual chart repo URL
-        HELM_REPO_USERNAME: ${{ secrets.HELM_REPO_USERNAME }}
-        HELM_REPO_PASSWORD: ${{ secrets.HELM_REPO_PASSWORD }}
-      run: |
-        helm repo add myrepo $HELM_REPO_URL --username $HELM_REPO_USERNAME --password $HELM_REPO_PASSWORD
-        helm push $(ls *.tgz) myrepo
+      - name: Update Helm Chart Index
+        run: |
+          cd gh-pages
+          mv ../.deploy/*.tgz .
+          helm repo index . --merge index.yaml || helm repo index .
+          cd ..
+
+      - name: Commit and Push Changes
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Update Helm chart" || echo "No changes to commit"
+          git push
