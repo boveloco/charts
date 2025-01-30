@@ -1,0 +1,49 @@
+{{ if .Values.pvcVolumeMounts }}
+{{ range .Values.pvcVolumeMounts }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .name }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .size }}
+  storageClassName: {{ .storageClassName }}
+  {{ if .pv.name }}
+  volumeName: {{ .pv.name }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .pv.name }}
+  {{ if .pv.node }}
+  annotations:
+    local.path.provisioner/selected-node: {{ .pv.node }}
+  {{ end }}
+spec:
+  capacity:
+    storage: {{ .size }}
+  {{ if .pv.host }}
+  hostPath:
+    path: {{ .pv.host.path }}
+    type: {{ .pv.host.type  | default "Directory" }}
+  {{ end }}
+  {{ if .pv.node }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ .pv.node }}
+  {{ end }}
+  persistenVolumeReclaimPolicy: {{ .pv.reclaimPolicy |  default "Delete" }}
+  storageClassName: {{ .storageClassName }}
+  volumeMode: Filesystem
+{{ end }}
+---
+{{ end }}
+{{ end }}

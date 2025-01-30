@@ -1,0 +1,65 @@
+{{ if .Values.deployment.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      {{- if .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.deployment.nodeSelector | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Release.Name }}-container
+          image: {{ .Values.deployment.image }}
+          {{ if .Values.service.enabled -}}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          {{- end }}
+          resources:
+            requests:
+              memory: {{ .Values.deployment.resources.requests.memory | default "64Mi" }}
+              cpu: {{ .Values.deployment.resources.requests.cpu | default "250m" }}
+            limits:
+              memory: {{ .Values.deployment.resources.limits.memory | default "128Mi" }}
+              cpu: {{ .Values.deployment.resources.limits.cpu | default "500m" }}
+          env:
+            {{- range .Values.deployment.env }}
+            - name: {{ .name }}
+              value: {{ .value }}
+            {{- end }}
+          volumeMounts:
+            {{- range .Values.hostVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+            {{- range .Values.pvcVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+      {{ if .Values.deployment.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.deployment.imagePullSecrets }}
+      {{- end }}
+      volumes:
+        {{- range .Values.hostVolumeMounts }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .hostPath }}
+            type: Directory
+        {{- end }}
+        {{- range .Values.pvcVolumeMounts }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}
+        {{- end }}
+{{- end }}

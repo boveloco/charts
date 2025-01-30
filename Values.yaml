@@ -1,0 +1,49 @@
+clusterIssuer: letsencrypt-prod
+
+deployment:
+  enabled: true
+  replicaCount: 1
+  image: nginx:1.7.9
+  nodeSelector:
+    kubernetes.io/hostname: slave01
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 250m
+    limits:
+      memory: 128Mi
+      cpu: 500m
+  env:
+  - name: DEMO_GREETING
+    value: "Hello from the environment"
+  - name: DEMO_FAREWELL
+    value: "Such a sweet sorrow"
+hostVolumeMounts:
+- name: cache-volume
+  hostPath: /data/cache
+
+pvcVolumeMounts:
+- name: data-volume
+  mountPath: /data
+  size: 2Gi
+  storageClassName: local-storage
+  pv:
+    name: data-pv
+    host:
+      path: /data
+      type: Directory
+    node: slave01
+    reclaimPolicy: Delete
+
+service:
+  enabled: true
+  ports:
+  - port: 80
+
+ingress:
+  enabled: false
+  class: nginx
+  hosts:
+  - host: plex.k8s.nullservers.com
+    paths:
+    - path: /
