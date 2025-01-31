@@ -30,5 +30,4 @@ spec:
 			- {{ .host }}
 			secretName: {{ .secretName }}-ingress-tls
 		{{ end }}
-  
 {{ end }}
