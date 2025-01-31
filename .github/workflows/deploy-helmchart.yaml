@@ -2,10 +2,8 @@ name: Deploy Helm Chart to GitHub Pages
 
 on:
   push:
-    branches:
-      - main  # Change if your default branch is different
-    paths:
-      - 'charts/**'  # Trigger only when chart files change
+    tags:
+      - "v*"  # Runs only when a new tag (e.g., v1.2.3) is pushed
 
 jobs:
   deploy:
@@ -18,12 +16,12 @@ jobs:
       - name: Setup Helm
         uses: azure/setup-helm@v3
         with:
-          version: v3.17.0  # Adjust to the latest Helm version
+          version: v3.14.3  # Adjust to the latest Helm version
 
-      - name: Package Helm Chart
+      - name: Install yq (YAML Processor)
         run: |
-          mkdir -p .deploy
-          helm package charts/ --destination .deploy
+          sudo apt-get update
+          sudo apt-get install -y yq
 
       - name: Checkout gh-pages Branch
         uses: actions/checkout@v4
@@ -31,18 +29,29 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
+      - name: Extract Version from Chart.yaml
+        id: get_version
+        run: |
+          CHART_NAME=$(basename charts/*)
+          CHART_PATH="charts/$CHART_NAME/Chart.yaml"
+
+          # Extract version from Chart.yaml
+          CHART_VERSION=$(yq '.version' "$CHART_PATH")
+
+          echo "Chart name: $CHART_NAME"
+          echo "Chart version: $CHART_VERSION"
+
+          echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
+          echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
+
+      - name: Package Helm Chart
+        run: |
+          mkdir -p .deploy
+          helm package charts/$CHART_NAME --destination .deploy
+
       - name: Update Helm Chart Index
         run: |
           cd gh-pages
           mv ../.deploy/*.tgz .
           helm repo index . --merge index.yaml || helm repo index .
           cd ..
-
-      - name: Commit and Push Changes
-        run: |
-          cd gh-pages
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Update Helm chart" || echo "No changes to commit"
-          git push
