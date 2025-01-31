@@ -1,4 +1,4 @@
-name: Release Helm Chart
+name: Release Helm Charts
 
 on:
   push:
@@ -6,8 +6,12 @@ on:
       - "v*"  # Runs only when a new tag (e.g., v1.2.3) is pushed
 
 jobs:
-  release-chart:
+  release-charts:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chart_dir: ./charts/*  # Iterate over subdirectories in 'charts'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -18,14 +22,14 @@ jobs:
           helm-version: "latest"
 
       - name: Package Chart
-        run: helm package ./chart
+        run: helm package ${{ matrix.chart_dir }}
 
       - name: Upload to Release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./chart/*.tgz
-          asset_name: ${{ steps.package-chart.outputs.chart_file }} # Use output from packaging
+          asset_path: ./*.tgz # Upload all .tgz files in the root
+          asset_name: ${{ steps.package-chart.outputs.chart_file }}
 
       - name: Generate index.yaml
         run: helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
@@ -35,11 +39,11 @@ jobs:
         with:
           commit_message: "Update Helm Chart Index"
           file_pattern: index.yaml
-          branch: gh-pages # Or the branch your GitHub Pages uses
+          branch: gh-pages
 
       - name: Deploy to GitHub Pages (if needed)
         uses: actions/deploy-pages@v2
-        if: github.ref == 'refs/heads/main' # Only deploy from your main branch
+        if: github.ref == 'refs/heads/main'
         with:
           path: .
           token: ${{ secrets.GITHUB_TOKEN }}
