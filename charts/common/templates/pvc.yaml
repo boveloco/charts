@@ -1,3 +1,4 @@
+---
 {{ if .Values.pvcVolumeMounts }}
 {{ range .Values.pvcVolumeMounts }}
 apiVersion: v1
