@@ -2,8 +2,8 @@ name: Deploy Helm Chart to GitHub Pages
 
 on:
   push:
-    tags:
-      - "v*"  # Runs only when a new tag (e.g., v1.2.3) is pushed
+    branches:
+      - main
 
 jobs:
   deploy:

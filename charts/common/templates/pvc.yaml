@@ -11,7 +11,7 @@ spec:
     requests:
       storage: {{ .size }}
   storageClassName: {{ .storageClassName }}
-  {{ if .pv.name }}
+  {{ if .pv }}
   volumeName: {{ .pv.name }}
 ---
 apiVersion: v1
