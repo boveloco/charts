@@ -16,7 +16,6 @@ spec:
     - host: {{ $host.host }}
       http:
         paths:
-          {{- range $path := $host.paths }}
           - path: {{ $path.path | default "/" }}
             pathType: {{ $path.pathType | default "Prefix" }}
             backend:
@@ -24,7 +23,6 @@ spec:
                 name: {{ $.Values.service.name }}
                 port:
                   number: {{ $.Values.service.port }}
-          {{- end }}
     {{- end }}
   tls:
     {{- range $host := .Values.ingress.hosts }}
