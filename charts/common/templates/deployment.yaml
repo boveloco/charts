@@ -35,13 +35,12 @@ spec:
           env:
             {{- range .Values.deployment.env }}
             - name: {{ .name }}
-              {{ if .valueFrom }}
+              {{- if .valueFrom }}
               valueFrom:
-                {{- toYaml .valueFrom | nindent 12 }}
+                {{- toYaml .valueFrom | nindent 14 }}
               {{- else }}
               value: {{ .value }}
               {{- end }}
-
             {{- end }}
           volumeMounts:
             {{- range .Values.hostVolumeMounts }}
