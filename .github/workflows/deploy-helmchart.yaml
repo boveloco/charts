@@ -1,4 +1,4 @@
-name: Release Helm Charts
+name: Deploy Helm Chart to GitHub Pages
 
 on:
   push:
@@ -6,57 +6,61 @@ on:
       - "v*"  # Runs only when a new tag (e.g., v1.2.3) is pushed
 
 jobs:
-  release-charts:
+  deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        chart_name: ${{ fromJson(steps.list_charts.outputs.chart_names) }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Set up Helm
+      - name: Setup Helm
         uses: azure/setup-helm@v3
         with:
-          helm-version: "latest"
+          version: v3.14.3  # Adjust to the latest Helm version
 
-      - name: List Charts
-        id: list_charts
+      - name: Install yq (YAML Processor)
         run: |
-          chart_names=$(ls -d ./charts/* | jq -r '.[]."/chart.yaml" | gsub("/chart.yaml","")' | toJson)
-          echo "::set-output name=chart_names::$chart_names"
+          sudo apt-get update
+          sudo apt-get install -y yq
 
-      - name: Package Chart
-        run: helm package ./charts/${{ matrix.chart_name }}
-
-      - name: Upload to Release
-        uses: actions/upload-release-asset@v1
+      - name: Checkout gh-pages Branch
+        uses: actions/checkout@v4
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./*.tgz
-          asset_name: ${{ matrix.chart_name }}-${{ github.event.release.tag_name }}.tgz # More descriptive name
+          ref: gh-pages
+          path: gh-pages
 
-      - name: Generate index.yaml
-        run: helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+      - name: Extract Version from Chart.yaml
+        id: get_version
+        run: |
+          CHART_NAME=$(basename charts/*)
+          CHART_PATH="charts/$CHART_NAME/Chart.yaml"
 
-      - name: Commit index.yaml
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Update Helm Chart Index"
-          file_pattern: index.yaml
-          branch: gh-pages
+          # Extract version from Chart.yaml
+          CHART_VERSION=$(yq '.version' "$CHART_PATH")
 
-      - name: Deploy to GitHub Pages (if needed)
-        uses: actions/deploy-pages@v2
-        if: github.ref == 'refs/heads/main'
-        with:
-          path: .
-          token: ${{ secrets.GITHUB_TOKEN }}
+          echo "Chart name: $CHART_NAME"
+          echo "Chart version: $CHART_VERSION"
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v3
-        if: github.ref == 'refs/heads/main'
-        with:
-          source: '.'
-          path: '/'
+          echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
+          echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
+
+      - name: Package Helm Chart
+        run: |
+          mkdir -p .deploy
+          helm package charts/$CHART_NAME --destination .deploy
+
+      - name: Update Helm Chart Index
+        run: |
+          cd gh-pages
+          mv ../.deploy/*.tgz .
+          helm repo index . --merge index.yaml || helm repo index .
+          cd ..
+
+      - name: Commit and Push Changes
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Release Helm chart v$CHART_VERSION" || echo "No changes to commit"
+          git push
