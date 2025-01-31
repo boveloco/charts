@@ -23,12 +23,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y yq
 
-      - name: Checkout gh-pages Branch
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages
-
       - name: Extract Version from Chart.yaml
         id: get_version
         run: |
@@ -37,16 +31,14 @@ jobs:
           # Extract version from Chart.yaml
           CHART_VERSION=$(yq '.version' "$CHART_PATH")
 
-          echo "Chart name: $CHART_NAME"
           echo "Chart version: $CHART_VERSION"
 
-          echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
           echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
 
       - name: Package Helm Chart
         run: |
           mkdir -p .deploy
-          helm package charts/$CHART_NAME --destination .deploy
+          helm package charts/ --destination .deploy
 
       - name: Update Helm Chart Index
         run: |
