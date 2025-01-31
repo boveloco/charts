@@ -13,7 +13,7 @@ spec:
     - protocol: {{ .protocol | default "TCP" }}
       port: {{ .port }}
       targetPort: {{ .targetPort | default .port }}
-      name: {{ .name | default .port }}
+      name: {{ .name | default .port | quote }}
 {{ end }}
   type: {{ .Values.service.type | default "ClusterIP" }}
 {{ end }}

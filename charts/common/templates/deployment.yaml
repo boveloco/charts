@@ -37,7 +37,7 @@ spec:
             - name: {{ .name }}
               {{- if .valueFrom }}
               valueFrom:
-                {{- toYaml .valueFrom | nindent 14 }}
+                {{- toYaml .valueFrom | nindent 16 }}
               {{- else }}
               value: {{ .value }}
               {{- end }}
