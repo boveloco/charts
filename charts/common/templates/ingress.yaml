@@ -23,7 +23,7 @@ spec:
             pathType: {{ .pathType | default "Prefix" | quote }}
             backend:
               service:
-                name: {{ $.Values.service.name | default "default-service" | quote }}
+                name: {{ $.Release.Name }}
                 port:
                   number: {{ (index $.Values.service.ports 0).port | default 80 }}
     {{- end }}
