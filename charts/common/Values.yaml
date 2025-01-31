@@ -41,7 +41,7 @@ service:
   - port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   class: nginx
   hosts:
   - host: plex.k8s.nullservers.com
