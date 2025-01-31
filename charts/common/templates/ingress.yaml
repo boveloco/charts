@@ -27,12 +27,10 @@ spec:
                 port:
                   number: {{ (index $.Values.service.ports 0).port | default 80 }}
     {{- end }}
-  {{- if .Values.ingress.tls }}
   tls:
     {{- range .Values.ingress.hosts }}
     - hosts:
         - {{ .host | quote }}
       secretName: {{ .secretName | default (printf "%s-ingress-tls" .host) | quote }}
     {{- end }}
-  {{- end }}
 {{- end }}
