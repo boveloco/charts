@@ -47,3 +47,4 @@ ingress:
   - host: plex.k8s.nullservers.com
     paths:
     - path: /
+  - host: test.k8s.nullservers.com

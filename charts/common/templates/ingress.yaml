@@ -32,5 +32,5 @@ spec:
     {{- range .Values.ingress.hosts }}
         - {{ .host | quote }}
     {{- end }}
-      secretName: {{ .secretName | default (printf "%s-ingress-tls" .host) | quote }}
+      secretName: {{ $.Release.Name }}-ingress-tls
 {{- end }}
