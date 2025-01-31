@@ -41,6 +41,7 @@ spec:
             {{- range .Values.hostVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly | default "true" }}
             {{- end }}
             {{- range .Values.pvcVolumeMounts }}
             - name: {{ .name }}
