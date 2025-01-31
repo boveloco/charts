@@ -16,8 +16,8 @@ spec:
     - host: {{ $host.host }}
       http:
         paths:
-          - path: {{ $path.path | default "/" }}
-            pathType: {{ $path.pathType | default "Prefix" }}
+          - path: {{ $host.path | default "/" }}
+            pathType: {{ $host.pathType | default "Prefix" }}
             backend:
               service:
                 name: {{ $.Values.service.name }}
