@@ -21,9 +21,9 @@ spec:
       containers:
         - name: {{ .Release.Name }}-container
           image: {{ .Values.deployment.image }}
-          {{ if .Values.service.enabled -}}
+          {{ if .Values.deployment.port -}}
           ports:
-            - containerPort: {{ .Values.service.targetPort }}
+            - containerPort: {{ .Values.deployment.port }}
           {{- end }}
           resources:
             requests:
