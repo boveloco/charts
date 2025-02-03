@@ -39,7 +39,7 @@ spec:
               valueFrom:
                 {{- toYaml .valueFrom | nindent 16 }}
               {{- else }}
-              value: {{ .value }}
+              value: {{ .value | quote}}
               {{- end }}
             {{- end }}
           volumeMounts:
