@@ -2,7 +2,16 @@ apiVersion: v1
 entries:
   common:
   - apiVersion: v2
-    created: "2025-02-04T00:05:43.585076137Z"
+    created: "2025-02-04T00:05:58.135641666Z"
+    description: Common Helmchart
+    digest: 4f8aba79b03a64488e7cc483abbd3068e85a16cd18d1a7782d56ded83bf425ea
+    name: common
+    type: application
+    urls:
+    - common-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    created: "2025-02-04T00:05:58.135490123Z"
     description: Common Helmchart
     digest: 28209ec35e6c3511cc93b707a4122b639365ee366241886d6d60649fdd5c5583
     name: common
@@ -11,7 +20,7 @@ entries:
     - common-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
-    created: "2025-02-04T00:05:43.584887135Z"
+    created: "2025-02-04T00:05:58.135308995Z"
     description: Common Helmchart
     digest: af8041f3f9068ab2e15c0fbef0a6bb98053f4b77301d8d3422d37a0d12e44cd2
     name: common
@@ -19,4 +28,4 @@ entries:
     urls:
     - common-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-04T00:05:43.584631969Z"
+generated: "2025-02-04T00:05:58.135020497Z"
