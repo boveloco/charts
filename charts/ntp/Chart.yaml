@@ -11,7 +11,9 @@ keywords:
   - kubernetes
 sources:
   - https://hub.docker.com/r/cturra/ntp
-home: https://github.com/boveloco/kube-chrony
+  - https://github.com/boveloco/charts/tree/main/charts/ntp
+  - https://github.com/boveloco/kube-chrony
+home: https://github.com/boveloco/charts/tree/main/charts/ntp
 maintainers:
   - name: GlennHD
   - name: Andre Bovendorp
