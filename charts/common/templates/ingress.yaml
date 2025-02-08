@@ -4,6 +4,11 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name | quote }}
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: {{ .Release.Name | quote }}
+    {{- if .Values.labels }}
+    {{- toYaml .Values.labels | nindent 8 }}
+    {{- end }}
   annotations:
     {{- if .Values.ingress.annotations }}
     {{- toYaml .Values.ingress.annotations | nindent 4 }}

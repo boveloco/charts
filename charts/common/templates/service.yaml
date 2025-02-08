@@ -5,6 +5,11 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    {{- if .Values.labels }}
+    {{- toYaml .Values.labels | nindent 8 }}
+    {{- end }}
 spec:
   selector:
     app: {{ .Release.Name }}

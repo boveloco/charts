@@ -4,6 +4,11 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    {{- if .Values.labels }}
+    {{- toYaml .Values.labels | nindent 8 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
@@ -13,6 +18,9 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
+        {{ if .Values.labels }}
+        {{- toYaml .Values.labels | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.deployment.nodeSelector }}
       nodeSelector:
