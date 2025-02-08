@@ -1,0 +1,64 @@
+replicaCount: 2
+strategyType: RollingUpdate
+maxSurge: 1
+maxUnavailable: 1
+
+image:
+  repository: "cturra/ntp"
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+
+serviceUDP:
+  type: LoadBalancer
+  port: 123
+  externalTrafficPolicy: Local
+  annotations: {}
+
+ntpServers: "0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
+
+ingress:
+  enabled: false
+
+probes:
+  liveness:
+    enabled: true
+    periodSeconds: 10
+    initialDelaySeconds: 30
+    failureThreshold: 10
+    timeoutSeconds: 15
+  readiness:
+    enabled: true
+    periodSeconds: 10
+    initialDelaySeconds: 30
+    failureThreshold: 5
+    timeoutSeconds: 15
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+
+nodeSelector: {}
+
+tolerations: []
+affinity: {}
+extraEnvVars: {}
+extraEnvVarsSecret: {}
