@@ -6,11 +6,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .name }}
   namespace: {{ .namespace }}
+  {{- if .Values.labels }}
   labels:
-    app: {{ $.Release.Name | quote }}
-    {{- if .Values.labels }}
     {{- toYaml .Values.labels | nindent 8 }}
-    {{- end }}
+  {{- end }}
 spec:
   accessModes:
   - ReadWriteOnce
