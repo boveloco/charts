@@ -26,9 +26,22 @@ spec:
       nodeSelector:
         {{- toYaml .Values.deployment.nodeSelector | nindent 8 }}
       {{- end }}
+      {{ if .Values.unprivileged }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      {{- end }}
       containers:
         - name: {{ .Release.Name }}-container
           image: {{ .Values.deployment.image }}
+          {{ if .Values.unprivileged }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+          {{- end }}
           {{ if .Values.deployment.port -}}
           ports:
             - containerPort: {{ .Values.deployment.port }}

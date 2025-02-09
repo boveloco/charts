@@ -1,5 +1,7 @@
 clusterIssuer: letsencrypt-prod
 
+unprivileged: true
+
 deployment:
   enabled: true
   replicaCount: 1
