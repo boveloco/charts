@@ -84,7 +84,7 @@ spec:
         - name: {{ .name }}
           hostPath:
             path: {{ .hostPath }}
-            type: Directory
+            type: {{ .type | default "Directory" }}
         {{- end }}
         {{- range .Values.pvcVolumeMounts }}
         - name: {{ .name }}
