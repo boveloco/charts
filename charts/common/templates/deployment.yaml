@@ -73,7 +73,7 @@ spec:
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
             {{- end }}
-            {{- range .Values.ConfigMapVolumeMounts }}
+            {{- range .Values.configMapVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath | default "" }}
@@ -101,7 +101,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .name }}
         {{- end }}
-        {{- range .Values.ConfigMapVolumeMounts }}
+        {{- range .Values.configMapVolumeMounts }}
         - name: {{ .name }}
           configMap:
             name: {{ .name }}
