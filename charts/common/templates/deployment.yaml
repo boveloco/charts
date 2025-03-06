@@ -76,11 +76,13 @@ spec:
             {{- range .Values.ConfigMapVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
               readOnly: true
             {{- end }}
             {{- range .Values.secretVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
               readOnly: true
             {{- end }}
       {{ if .Values.deployment.imagePullSecrets }}
