@@ -73,6 +73,16 @@ spec:
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
             {{- end }}
+            {{- range .Values.ConfigMapVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: true
+            {{- end }}
+            {{- range .Values.secretVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: true
+            {{- end }}
       {{ if .Values.deployment.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.deployment.imagePullSecrets }}
@@ -89,4 +99,15 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .name }}
         {{- end }}
+        {{- range .Values.ConfigMapVolumeMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .name }}
+        {{- end }}
+        {{- range .Values.secretVolumeMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .name }}
+        {{- end }}
+
 {{- end }}

@@ -31,21 +31,30 @@ deployment:
         name: ftp-server                
         key: password
 hostVolumeMounts:
-- name: cache-volume
-  hostPath: /data/cache
+# - name: cache-volume
+#   hostPath: /data/cache
 
 pvcVolumeMounts:
-- name: data-volume
-  mountPath: /data
-  size: 2Gi
-  storageClassName: local-storage
-  pv:
-    name: data-pv
-    host:
-      path: /data
-      type: Directory
-    node: slave01
-    reclaimPolicy: Delete
+# - name: data-volume
+#   mountPath: /data
+#   size: 2Gi
+#   storageClassName: local-storage
+#   pv:
+#     name: data-pv
+#     host:
+#       path: /data
+#       type: Directory
+#     node: slave01
+#     reclaimPolicy: Delete
+
+ConfigMapVolumeMounts:
+#   - name: my-configmap
+#     mountPath: /etc/config
+
+secretVolumeMounts:
+#   - name: my-secret
+#     mountPath: /etc/secret
+
 
 service:
   enabled: true
