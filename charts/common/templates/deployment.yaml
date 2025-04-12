@@ -36,6 +36,23 @@ spec:
           drop:
             - ALL
       {{- end }}
+      {{- if .Values.deployment.initContainers-}}
+      initContainers:
+        {{- range .Values.deployment.initContainers }}
+        - name: {{ .name }}
+          image: {{ .image }}
+          imagePullPolicy: {{ .imagePullPolicy | default "IfNotPresent" }}
+          command: {{ .command | default "" }}
+          args: {{ .args | default "" }}
+          volumeMounts:
+            {{- range .volumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly | default "true" }}
+            {{- end }}
+        {{- end }}
+      {{- end }}
+      
       containers:
         - name: {{ .Release.Name }}-container
           image: {{ .Values.deployment.image }}

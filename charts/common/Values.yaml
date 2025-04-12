@@ -15,21 +15,28 @@ deployment:
     limits:
       memory: 128Mi
       cpu: 500m
+  initContainers:
+    - name: init-myservice
+      image: busybox:1.28.4
+      command: ["sh", "-c", "echo The init container is running..."]
+      volumeMounts:
+        - name: cache-volume
+          mountPath: /data/cache
   env:
-  - name: DEMO_GREETING
-    value: "Hello from the environment"
-  - name: DEMO_FAREWELL
-    value: "Such a sweet sorrow"
-  - name: FTP_USER
-    valueFrom:
-      secretKeyRef:
-        name: ftp-server
-        key: username
-  - name: FTP_PASS
-    valueFrom:
-      secretKeyRef:
-        name: ftp-server                
-        key: password
+    - name: DEMO_GREETING
+      value: "Hello from the environment"
+    - name: DEMO_FAREWELL
+      value: "Such a sweet sorrow"
+    - name: FTP_USER
+      valueFrom:
+        secretKeyRef:
+          name: ftp-server
+          key: username
+    - name: FTP_PASS
+      valueFrom:
+        secretKeyRef:
+          name: ftp-server
+          key: password
 hostVolumeMounts:
 # - name: cache-volume
 #   hostPath: /data/cache
@@ -55,18 +62,17 @@ secretVolumeMounts:
 #   - name: my-secret
 #     mountPath: /etc/secret
 
-
 service:
   enabled: true
   ports:
-  - port: 80
-  - port: 443
+    - port: 80
+    - port: 443
 
 ingress:
   enabled: true
   class: nginx
   hosts:
-  - host: plex.k8s.nullservers.com
-    paths:
-    - path: /
-  - host: test.k8s.nullservers.com
+    - host: plex.k8s.nullservers.com
+      paths:
+        - path: /
+    - host: test.k8s.nullservers.com
