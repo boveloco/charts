@@ -36,7 +36,7 @@ spec:
           drop:
             - ALL
       {{- end }}
-      {{- if .Values.deployment.initContainers-}}
+      {{- if .Values.deployment.initContainers }}
       initContainers:
         {{- range .Values.deployment.initContainers }}
         - name: {{ .name }}
