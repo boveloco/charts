@@ -32,6 +32,9 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+        capabilities:
+          drop:
+            - ALL
       {{- end }}
       containers:
         - name: {{ .Release.Name }}-container
@@ -50,9 +53,11 @@ spec:
             requests:
               memory: {{ .Values.deployment.resources.requests.memory | default "64Mi" }}
               cpu: {{ .Values.deployment.resources.requests.cpu | default "250m" }}
+            {{- if .Values.deployment.resources.limits }}
             limits:
               memory: {{ .Values.deployment.resources.limits.memory | default "128Mi" }}
               cpu: {{ .Values.deployment.resources.limits.cpu | default "500m" }}
+            {{- end }}
           env:
             {{- range .Values.deployment.env }}
             - name: {{ .name }}
