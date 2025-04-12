@@ -23,20 +23,20 @@ deployment:
     #     - name: cache-volume
     #       mountPath: /data/cache
   env:
-    - name: DEMO_GREETING
-      value: "Hello from the environment"
-    - name: DEMO_FAREWELL
-      value: "Such a sweet sorrow"
-    - name: FTP_USER
-      valueFrom:
-        secretKeyRef:
-          name: ftp-server
-          key: username
-    - name: FTP_PASS
-      valueFrom:
-        secretKeyRef:
-          name: ftp-server
-          key: password
+    # - name: DEMO_GREETING
+    #   value: "Hello from the environment"
+    # - name: DEMO_FAREWELL
+    #   value: "Such a sweet sorrow"
+    # - name: FTP_USER
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: ftp-server
+    #       key: username
+    # - name: FTP_PASS
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: ftp-server
+    #       key: password
 hostVolumeMounts:
 # - name: cache-volume
 #   hostPath: /data/cache
