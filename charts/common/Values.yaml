@@ -16,12 +16,12 @@ deployment:
       memory: 128Mi
       cpu: 500m
   initContainers:
-    - name: init-myservice
-      image: busybox:1.28.4
-      command: ["sh", "-c", "echo The init container is running..."]
-      volumeMounts:
-        - name: cache-volume
-          mountPath: /data/cache
+    # - name: init-myservice
+    #   image: busybox:1.28.4
+    #   command: ["sh", "-c", "echo The init container is running..."]
+    #   volumeMounts:
+    #     - name: cache-volume
+    #       mountPath: /data/cache
   env:
     - name: DEMO_GREETING
       value: "Hello from the environment"
