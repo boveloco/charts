@@ -94,6 +94,7 @@ spec:
             {{- range .Values.pvcVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
             {{- end }}
             {{- range .Values.configMapVolumeMounts }}
             - name: {{ .name }}
