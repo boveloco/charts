@@ -44,6 +44,10 @@ spec:
         {{- range .Values.deployment.initContainers }}
         - name: {{ .name }}
           image: {{ .image }}
+          {{- if .Values.deployment.initContainers.securityContext }}
+          securityContext:
+            {{- toYaml .Values.deployment.initContainers.securityContext | nindent 12 }}
+          {{- end }}
           imagePullPolicy: {{ .imagePullPolicy | default "IfNotPresent" }}
           command: {{ .command | default "" }}
           args: {{ .args | default "" }}
