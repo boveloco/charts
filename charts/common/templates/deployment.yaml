@@ -103,6 +103,12 @@ spec:
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath | default "" }}
             {{- end }}
+            {{- range .Values.emptyDirVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
+            {{- end }}
+            {{- range .Values.hostPathVolumeMounts }}
             {{- range .Values.configMapVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -134,6 +140,13 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .name }}
         {{- end }}
+        {{- range .Values.emptyDirVolumeMounts }}
+        - name: {{ .name }}
+          emptyDir:
+            medium: {{ .medium | default "" }}
+            sizeLimit: {{ .sizeLimit | default "500Mi" }}
+        {{- end }}
+        {{- range .Values.hostPathVolumeMounts }}
         {{- range .Values.configMapVolumeMounts }}
         - name: {{ .name }}
           configMap:

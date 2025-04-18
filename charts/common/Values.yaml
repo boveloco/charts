@@ -42,6 +42,13 @@ hostVolumeMounts:
 # - name: cache-volume
 #   hostPath: /data/cache
 
+emptyDirVolumeMounts:
+# - name: cache-volume
+#   mountPath: /tmp
+#   subPath: cache
+#   size: 2Gi
+#   medium: Memory
+
 pvcVolumeMounts:
 # - name: data-volume
 #   mountPath: /data
@@ -55,7 +62,7 @@ pvcVolumeMounts:
 #     node: slave01
 #     reclaimPolicy: Delete
 
-ConfigMapVolumeMounts:
+configMapVolumeMounts:
 #   - name: my-configmap
 #     mountPath: /etc/config
 
