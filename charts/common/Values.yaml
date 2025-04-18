@@ -5,6 +5,7 @@ unprivileged: true
 deployment:
   enabled: true
   replicaCount: 1
+  # imagePullSecrets: "docker-hub-token"
   image: nginx:1.7.9
   nodeSelector:
     kubernetes.io/hostname: slave01

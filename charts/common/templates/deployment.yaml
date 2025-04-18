@@ -118,6 +118,9 @@ spec:
       {{ if .Values.deployment.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.deployment.imagePullSecrets }}
+        - name: {{ .Release.Name }}-dockerhub-token
+      {{- else }}
+        - name: {{ .Release.Name }}-dockerhub-token
       {{- end }}
       volumes:
         {{- range .Values.hostVolumeMounts }}
