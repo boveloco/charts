@@ -108,7 +108,6 @@ spec:
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath | default "" }}
             {{- end }}
-            {{- range .Values.hostPathVolumeMounts }}
             {{- range .Values.configMapVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
