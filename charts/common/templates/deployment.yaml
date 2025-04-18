@@ -145,7 +145,6 @@ spec:
             medium: {{ .medium | default "" }}
             sizeLimit: {{ .sizeLimit | default "500Mi" }}
         {{- end }}
-        {{- range .Values.hostPathVolumeMounts }}
         {{- range .Values.configMapVolumeMounts }}
         - name: {{ .name }}
           configMap:
