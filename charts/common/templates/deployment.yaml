@@ -10,6 +10,7 @@ metadata:
     {{- toYaml .Values.labels | nindent 8 }}
     {{- end }}
 spec:
+  revisionHistoryLimit: 3
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
