@@ -22,6 +22,9 @@ spec:
         {{- toYaml .Values.labels | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.deployment.serviceAccountName }}
+      serviceAccountName: {{ .Values.deployment.serviceAccountName }}
+      {{- end }}
       {{- if .Values.deployment.nodeSelector }}
       nodeSelector:
         {{- toYaml .Values.deployment.nodeSelector | nindent 8 }}
