@@ -23,6 +23,15 @@ spec:
         {{- toYaml .Values.labels | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.tolerations }}
+      tolerations:
+        {{- range .Values.tolerations }}
+        - key: {{ .key }}
+          operator: {{ .operator | default "Equal" }}
+          value: {{ .value | default "" }}
+          effect: {{ .effect | default "NoSchedule" }}
+        {{- end }}
+      {{- end }}
       {{- if .Values.deployment.serviceAccountName }}
       serviceAccountName: {{ .Values.deployment.serviceAccountName }}
       {{- end }}

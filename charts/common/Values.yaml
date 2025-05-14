@@ -2,6 +2,12 @@ clusterIssuer: letsencrypt-prod
 
 unprivileged: true
 
+tolerations:
+  # - key: test
+  #   operator: Equal
+  #   value: test
+  #   effect: NoSchedule
+
 deployment:
   enabled: true
   replicaCount: 1
