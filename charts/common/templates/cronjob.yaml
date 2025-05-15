@@ -1,0 +1,118 @@
+{{ if .Values.cronjob.enabled}}
+{{ if .Values.deployment.enabled}}
+{{ fail "You cannot enable both cronjob and cronjob at the same time." }}
+{{ end }}
+{{- if .Values.cronjob.schedule | eq "" }}
+{{ fail "CronJob schedule is required." }}
+{{ end }}
+{{- if .Values.cronjob.image | eq "" }}
+{{ fail "CronJob image is required." }}
+{{ end }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+  {{- if .Values.cronjob.annotations }}
+    {{ range $key, $value := .Values.cronjob.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  labels:
+    app: {{ .Release.Name }}
+    {{ if .Values.global.labels }}
+    {{ toYaml .Values.global.labels | nindent 8 }}
+    {{ end }}
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit | default 3 }}
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit | default 2 }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: {{ .Release.Name }}
+              image: {{ .Values.cronjob.image }}
+              {{ if .Values.cronjob.env }}
+              env: 
+              {{ range .Values.cronjob.env }}
+                - name: {{ .name }}
+                  {{ if .valueFrom }}
+                  valueFrom:
+                    {{ toYaml .valueFrom | nindent 20 }}
+                  {{ else }}
+                  value: {{ .value | quote}}
+                  {{ end }}
+              {{ end }}
+              {{ end }}
+              volumeMounts:
+                {{ range .Values.hostVolumeMounts }}
+                - name: {{ .name }}
+                  mountPath: {{ .mountPath }}
+                  readOnly: {{ .readOnly | default "true" }}
+                {{ end }}
+                {{ range .Values.pvcVolumeMounts }}
+                - name: {{ .name }}
+                  mountPath: {{ .mountPath }}
+                  subPath: {{ .subPath | default "" }}
+                {{ end }}
+                {{ range .Values.emptyDirVolumeMounts }}
+                - name: {{ .name }}
+                  mountPath: {{ .mountPath }}
+                  subPath: {{ .subPath | default "" }}
+                {{ end }}
+                {{ range .Values.configMapVolumeMounts }}
+                - name: {{ .name }}
+                  mountPath: {{ .mountPath }}
+                  subPath: {{ .subPath | default "" }}
+                  readOnly: true
+                {{ end }}
+                {{ range .Values.secretVolumeMounts }}
+                - name: {{ .name }}
+                  mountPath: {{ .mountPath }}
+                  subPath: {{ .subPath | default "" }}
+                  readOnly: true
+                {{ end }}
+              {{ if .Values.cronjob.imagePullSecrets }}
+              imagePullSecrets:
+                - name: {{ .Values.cronjob.imagePullSecrets }}
+                - name: {{ .Release.Name }}-dockerhub-token
+              {{ else }}
+              imagePullSecrets:
+                - name: {{ .Release.Name }}-dockerhub-token
+              {{ end }}
+          restartPolicy: OnFailure
+          volumes:
+            {{ range .Values.hostVolumeMounts }}
+            - name: {{ .name }}
+              hostPath:
+                path: {{ .hostPath }}
+                type: {{ .type | default "Directory" }}
+            {{ end }}
+            {{ range .Values.pvcVolumeMounts }}
+            - name: {{ .name }}
+              persistentVolumeClaim:
+                claimName: {{ .name }}
+            {{ end }}
+            {{ range .Values.emptyDirVolumeMounts }}
+            - name: {{ .name }}
+              emptyDir:
+                medium: {{ .medium | default "" }}
+                sizeLimit: {{ .sizeLimit | default "500Mi" }}
+            {{ end }}
+            {{ range .Values.configMapVolumeMounts }}
+            - name: {{ .name }}
+              configMap:
+                name: {{ .name }}
+            {{ end }}
+            {{ range .Values.secretVolumeMounts }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .name }}
+            {{ end }}
+
+
+
+{{ end }}

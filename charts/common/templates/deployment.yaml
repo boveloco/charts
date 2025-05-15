@@ -1,4 +1,7 @@
 {{ if .Values.deployment.enabled -}}
+{{ if .Values.cronjob.enabled -}}
+{{- fail "Deployment and CronJob cannot be enabled at the same time." -}}
+{{ end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

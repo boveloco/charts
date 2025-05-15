@@ -2,11 +2,50 @@ clusterIssuer: letsencrypt-prod
 
 unprivileged: true
 
+global:
+  labels:
+    # project: my-shiny-project
+
 tolerations:
   # - key: test
   #   operator: Equal
   #   value: test
   #   effect: NoSchedule
+
+cronjob:
+  enabled: false
+  annotations:
+    # my-annotation: "my-value"
+    # my-annotation2: "my-value2"
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 2
+  image: busybox:1.28.4
+  env:
+    # - name: DEMO_GREETING
+    #   value: "Hello from the environment"
+    # - name: DEMO_FAREWELL
+    #   value: "Such a sweet sorrow"
+    # - name: FTP_USER
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: ftp-server
+    #       key: username
+    # - name: FTP_PASS
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: ftp-server
+    #       key: password
+  hostVolumeMounts: # Same as Deployment
+
+  emptyDirVolumeMounts:
+
+  pvcVolumeMounts:
+
+  configMapVolumeMounts:
+
+  secretVolumeMounts:
+
 
 deployment:
   enabled: true
@@ -45,19 +84,19 @@ deployment:
     #     secretKeyRef:
     #       name: ftp-server
     #       key: password
-hostVolumeMounts:
-# - name: cache-volume
+hostVolumeMounts: # - name: cache-volume
+
 #   hostPath: /data/cache
 
-emptyDirVolumeMounts:
-# - name: cache-volume
+emptyDirVolumeMounts: # - name: cache-volume
+
 #   mountPath: /tmp
 #   subPath: cache
 #   size: 2Gi
 #   medium: Memory
 
-pvcVolumeMounts:
-# - name: data-volume
+pvcVolumeMounts: # - name: data-volume
+
 #   mountPath: /data
 #   size: 2Gi
 #   storageClassName: local-storage
@@ -69,25 +108,25 @@ pvcVolumeMounts:
 #     node: slave01
 #     reclaimPolicy: Delete
 
-configMapVolumeMounts:
-#   - name: my-configmap
+configMapVolumeMounts: #   - name: my-configmap
+
 #     mountPath: /etc/config
 
-secretVolumeMounts:
-#   - name: my-secret
+secretVolumeMounts: #   - name: my-secret
+
 #     mountPath: /etc/secret
 
 service:
   enabled: true
   ports:
-    - port: 80
-    - port: 443
+  - port: 80
+  - port: 443
 
 ingress:
   enabled: true
   class: nginx
   hosts:
-    - host: plex.k8s.nullservers.com
-      paths:
-        - path: /
-    - host: test.k8s.nullservers.com
+  - host: plex.k8s.nullservers.com
+    paths:
+    - path: /
+  - host: test.k8s.nullservers.com
