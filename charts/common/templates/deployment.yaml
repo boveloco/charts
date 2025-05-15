@@ -72,7 +72,6 @@ spec:
             {{- end }}
         {{- end }}
       {{- end }}
-      
       containers:
         - name: {{ .Release.Name }}-container
           image: {{ .Values.deployment.image }}
@@ -133,14 +132,13 @@ spec:
               subPath: {{ .subPath | default "" }}
               readOnly: true
             {{- end }}
-      {{ if .Values.deployment.imagePullSecrets }}
-      imagePullSecrets:
-        - name: {{ .Values.deployment.imagePullSecrets }}
-        - name: {{ .Release.Name }}-dockerhub-token
-      {{- else }}
-      imagePullSecrets:
-        - name: {{ .Release.Name }}-dockerhub-token
-      {{- end }}
+          imagePullSecrets:
+            - name: {{ .Release.Name }}-dockerhub-token
+          {{ if .Values.global.imagePullSecrets }}
+          {{ range .Values.global.imagePullSecrets }}
+            - name: {{ .name }}
+          {{ end }}
+          {{ end }}
       volumes:
         {{- range .Values.hostVolumeMounts }}
         - name: {{ .name }}

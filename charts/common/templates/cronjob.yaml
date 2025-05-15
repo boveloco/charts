@@ -32,6 +32,13 @@ spec:
     spec:
       template:
         spec:
+          imagePullSecrets:
+            - name: {{ .Release.Name }}-dockerhub-token
+          {{ if .Values.global.imagePullSecrets }}
+          {{ range .Values.global.imagePullSecrets }}
+            - name: {{ .name }}
+          {{ end }}
+          {{ end }}
           containers:
             - name: {{ .Release.Name }}
               image: {{ .Values.cronjob.image }}
@@ -75,14 +82,6 @@ spec:
                   subPath: {{ .subPath | default "" }}
                   readOnly: true
                 {{ end }}
-              {{ if .Values.cronjob.imagePullSecrets }}
-              imagePullSecrets:
-                - name: {{ .Values.cronjob.imagePullSecrets }}
-                - name: {{ .Release.Name }}-dockerhub-token
-              {{ else }}
-              imagePullSecrets:
-                - name: {{ .Release.Name }}-dockerhub-token
-              {{ end }}
           restartPolicy: OnFailure
           volumes:
             {{ range .Values.hostVolumeMounts }}
