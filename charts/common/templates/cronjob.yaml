@@ -42,6 +42,10 @@ spec:
           containers:
             - name: {{ .Release.Name }}
               image: {{ .Values.cronjob.image }}
+              {{- if .Values.cronjob.resources }}
+              resources:
+                {{ toYaml .Values.cronjob.resources | nindent 14 }}
+                {{- end }}
               {{ if .Values.cronjob.env }}
               env: 
               {{ range .Values.cronjob.env }}

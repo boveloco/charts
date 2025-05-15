@@ -3,8 +3,8 @@ clusterIssuer: letsencrypt-prod
 unprivileged: true
 
 global:
-  imagePullSecrets: 
-  # - name: "docker-hub-token"
+  imagePullSecrets: # - name: "docker-hub-token"
+
   # - name: "docker-hub-token2"
 
   labels:
@@ -22,6 +22,13 @@ cronjob:
     # my-annotation: "my-value"
     # my-annotation2: "my-value2"
   schedule: "* * * * *"
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 250m
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 2
   image: busybox:1.28.4
