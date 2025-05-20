@@ -1,5 +1,8 @@
 clusterIssuer: letsencrypt-prod
 
+deafultImagePullSecrets:
+  enabled: true
+
 unprivileged: true
 
 global:
@@ -63,8 +66,8 @@ deployment:
   replicaCount: 1
   # serviceAccountName: "default"
   image: nginx:1.7.9
-  nodeSelector:
-    kubernetes.io/hostname: slave01
+  nodeSelector: 
+  # kubernetes.io/hostname: slave01
   resources:
     requests:
       memory: 64Mi
