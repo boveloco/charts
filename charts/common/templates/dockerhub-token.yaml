@@ -1,4 +1,4 @@
-{{ if .Values.deafultImagePullSecrets.enabled }}
+{{ if .Values.defaultImagePullSecrets.enabled | default "true" }}
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
