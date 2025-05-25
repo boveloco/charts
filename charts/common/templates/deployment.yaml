@@ -75,6 +75,7 @@ spec:
       containers:
         - name: {{ .Release.Name }}-container
           image: {{ .Values.deployment.image }}
+          args: {{ .Values.deployment.args | default "" }}
           {{ if .Values.unprivileged }}
           securityContext:
             allowPrivilegeEscalation: false
