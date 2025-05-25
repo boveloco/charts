@@ -63,7 +63,12 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .imagePullPolicy | default "IfNotPresent" }}
           command: {{ .command | default "" }}
-          args: {{ .args | default "" }}
+          {{- if .args }}
+          args:
+            {{- range .args }}
+            - {{ . }}
+            {{- end }}
+          {{- else }}
           volumeMounts:
             {{- range .volumeMounts }}
             - name: {{ .name }}
@@ -75,7 +80,11 @@ spec:
       containers:
         - name: {{ .Release.Name }}-container
           image: {{ .Values.deployment.image }}
-          args: {{ .Values.deployment.args | default "" }}
+          {{- if .Values.deployment.args }}
+          args:
+            {{- range .Values.deployment.args }}
+            - {{ . }}
+            {{- end }}
           {{ if .Values.unprivileged }}
           securityContext:
             allowPrivilegeEscalation: false
