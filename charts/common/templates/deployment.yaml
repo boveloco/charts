@@ -68,7 +68,7 @@ spec:
             {{- range .args }}
             - {{ . }}
             {{- end }}
-          {{- else }}
+          {{- end }}
           volumeMounts:
             {{- range .volumeMounts }}
             - name: {{ .name }}
@@ -85,6 +85,7 @@ spec:
             {{- range .Values.deployment.args }}
             - {{ . }}
             {{- end }}
+          {{- end }}
           {{ if .Values.unprivileged }}
           securityContext:
             allowPrivilegeEscalation: false

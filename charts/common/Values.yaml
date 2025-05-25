@@ -68,6 +68,10 @@ deployment:
   image: nginx:1.7.9
   nodeSelector: # kubernetes.io/hostname: slave01
 
+  # args:
+  # - a
+  # - b
+  # - c
   resources:
     requests:
       memory: 64Mi
