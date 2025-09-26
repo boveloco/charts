@@ -50,6 +50,10 @@ cronjob:
     #     secretKeyRef:
     #       name: ftp-server
     #       key: password
+    # VolumeMounts only in case of multiple mounts of same volume
+
+  volumeMounts:
+
   hostVolumeMounts: # Same as Deployment
 
   emptyDirVolumeMounts:

@@ -116,6 +116,12 @@ spec:
               {{- end }}
             {{- end }}
           volumeMounts:
+            {{- range .Values.volumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly | default "true" }}
+              subPath: {{ .subPath | default "" }}
+            {{- end }}
             {{- range .Values.hostVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
